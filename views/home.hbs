@@ -1,2 +1,19 @@
 <h1> Home </h1>
 <p>This is the {{ title }} page</p>
+<form action="/create" method="POST">
+<div class="form-group">
+    <label > Create a new chatroom</label>
+    <input type="text" name="name" class="form">
+    <input type="submit" value="Create" class = "button">
+</div>
+</form>
+<h4>All Available Chatrooms</h4>
+<ul>
+    {{#chatrooms}}
+        <li >{{this.name}}</li>
+        <form action="/{{this.name}}" method="GET">
+        <input type="submit" value="enter chat" class = "button">
+        </form>
+    {{/chatrooms}}
+</ul>
+
