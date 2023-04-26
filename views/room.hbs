@@ -5,90 +5,70 @@
 </p>
 <p>To generate a new room, here is the room id: {{ newRoomId }}</p>
  
-<form  class="mb-4">
+<form  >
 <div class="form-group">
-    <textarea type="text" name="message" id="formText" placeholder="Message..."></textarea>
-    <input type="button" onclick="appendMessage()" value="Send Message" class = "btn btn-primary btn-block">
+    <textarea type="text" name="message" placeholder="Message..."></textarea>
+    <input type="submit" onSubmit="appendMessage()" value="Send Message" class = "btn btn-primary btn-block">
 </div>
 </form>
 
 <h4>Messages</h4>
 <ul class="list-group" id="messages-container">
-    {{#messages}}
+    
+   {{!-- {{#each messages}}
     <li class="list-group-item">{{this}}</li>
-    {{/messages}}
+    {{/each}} --}}
 </ul>
 
 <script>
-    let nickname = prompt("What's your nickname?");
   
-    
-    function appendMessage(e) { // onclick="appendMessage()" in input submit
+    //let messages = room.getRoom().msg;
+    let nickname = prompt("What's your nickname?");
+    // console.log(nickname)
+    function appendMessage() { // onclick="appendMessage()" in input submit
         //console.log("onclick function successfully called")
         //e.preventDefault()
-        
-        console.log('do you come here')
-        const formEntry = document.getElementById('formText').value
-        //fetch("/{{roomName}}/sendMessage",{method:"POST",body: JSON.stringify({
-         //   formEntry
-         // })});
-          fetch("/{{roomName}}/sendMessage", {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  },
-   body: JSON.stringify({
-      
-      body: formEntry,
-      name: nickname
-      })
-})
-  .then(res => res.json())
-  .then(data => {
-    console.log(data)
-  })
-  .then(function(res) {
-    console.info('fetch()', res);
-    return response;
-})
-
+        fetch("/{{roomName}}/sendMessage",{method:"POST"});
         updateMessages();
         
+        //return false;
+        //fetch request that is post and then that returns a json. Then make it into a list
+        //like in the past assignments. 
+        //everytime you fetch, remove everything from list and then append
     }
     function updateMessages() {
         
-        console.log("fetch")
-        var newMessages = []
+        console.log("fetch");
+        let newlist = [];
         messagesJson = 
-        fetch("/{{roomName}}/messages", {headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }})
+        fetch("/{{roomName}}/messages")
         .then(res => res.json())
         .then(data => { 
             data.forEach(msg => {
-                newMessages.push(msg)})})
-        .then(displayVar => displayNewMessages(newMessages)).catch(err => {
+                newlist.push(msg);
+                
+                })})
+        .then(displayVar => displayNewMessages(newlist)).catch(err => {
         // error catching
-        console.log(err)
+        
         })
+        console.log(newlist)
 
     }
 
     function displayNewMessages(msgs) {
         
         const messagesContainer = document.getElementById('messages-container');
-        while(messagesContainer.firstChild) {
-            messagesContainer.removeChild(messagesContainer.firstChild);
-        }
+        // while(messagesContainer.firstChild) {
+         //   messagesContainer.removeChild(messagesContainer.firstChild);
+        //}
         msgs.forEach(msg => {
-            const msgItem = document.createElement("ul")
-            const second = document.createTextNode(msg.text)
-            msgItem.appendChild(second)
-            const first = document.createTextNode(msg.name+' : ')
-            messagesContainer.appendChild(first)
-            messagesContainer.appendChild(msgItem)
+            const msgItem = document.createElement("li")
+            msgItem.className = "list-group-item"
+            const text = document.createTextNode(msg)
+            msgItem.appendChild(text)
+            console.log(msgItem)
+            messagesContainer.appendChild(nickname+': '+msgItem)
         })
     }
     setInterval(updateMessages, [5000])
