@@ -1,1 +1,6 @@
 /* TODO: style each page */
+
+body {
+    background: #333;
+    color: #fff;
+  }

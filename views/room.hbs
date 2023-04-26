@@ -1,6 +1,83 @@
+{{!-- <h1> Room </h1>
+<p>This is a demo of chatroom page</p>
+<p>
+    The room you are visiting is {{ roomName }}
+</p>
+<p>To generate a new room, here is the room id: {{ newRoomId }}</p> --}}
+
+
 <h1> Room </h1>
 <p>This is a demo of chatroom page</p>
 <p>
     The room you are visiting is {{ roomName }}
 </p>
 <p>To generate a new room, here is the room id: {{ newRoomId }}</p>
+ 
+<form  >
+<div class="form-group">
+    <textarea type="text" name="message" placeholder="Message..."></textarea>
+    <input type="submit" onSubmit="appendMessage()" value="Send Message" class = "btn btn-primary btn-block">
+</div>
+</form>
+
+<h4>Messages</h4>
+<ul class="list-group" id="messages-container">
+    
+   {{!-- {{#each messages}}
+    <li class="list-group-item">{{this}}</li>
+    {{/each}} --}}
+</ul>
+
+<script>
+  
+    //let messages = room.getRoom().msg;
+    let nickname = prompt("What's your nickname?");
+    // console.log(nickname)
+    function appendMessage() { // onclick="appendMessage()" in input submit
+        //console.log("onclick function successfully called")
+        //e.preventDefault()
+        fetch("/{{roomName}}/sendMessage",{method:"POST"});
+        updateMessages();
+        
+        //return false;
+        //fetch request that is post and then that returns a json. Then make it into a list
+        //like in the past assignments. 
+        //everytime you fetch, remove everything from list and then append
+    }
+    function updateMessages() {
+        
+        console.log("fetch");
+        let newlist = [];
+        messagesJson = 
+        fetch("/{{roomName}}/messages")
+        .then(res => res.json())
+        .then(data => { 
+            data.forEach(msg => {
+                newlist.push(msg);
+                
+                })})
+        .then(displayVar => displayNewMessages(newlist)).catch(err => {
+        // error catching
+        
+        })
+        console.log(newlist)
+
+    }
+
+    function displayNewMessages(msgs) {
+        
+        const messagesContainer = document.getElementById('messages-container');
+        // while(messagesContainer.firstChild) {
+         //   messagesContainer.removeChild(messagesContainer.firstChild);
+        //}
+        msgs.forEach(msg => {
+            const msgItem = document.createElement("li")
+            msgItem.className = "list-group-item"
+            const text = document.createTextNode(msg)
+            msgItem.appendChild(text)
+            console.log(msgItem)
+            messagesContainer.appendChild(nickname+': '+msgItem)
+        })
+    }
+    setInterval(updateMessages, [5000])
+</script>
